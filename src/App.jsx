@@ -1,43 +1,12 @@
 import React, { useState } from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import { db } from "./firebase/firebaseConfig";
 import { collection, addDoc, Timestamp } from "firebase/firestore";
 import Admin from "./Admin";
 import AdminPanel from "./AdminPanel";
 
-function App() {
-  const [sent, setSent] = useState(false);
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const form = e.target;
-
-    const newLead = {
-      firstName: form.firstName.value,
-      lastName: form.lastName.value,
-      phone: form.phone.value,
-      address: form.address.value,
-      area: form.area.value,
-      profession: form.profession.value,
-      problem: form.problem.value,
-      createdAt: Timestamp.now(),
-    };
-
-    try {
-      await addDoc(collection(db, "leads"), newLead);
-      setSent(true);
-      form.reset();
-    } catch (error) {
-      console.error("שגיאה בשליחה:", error);
-    }
-  };
-
-  const scrollToForm = () => {
-    const section = document.getElementById("leadForm");
-    if (section) section.scrollIntoView({ behavior: "smooth" });
-  };
-
-  const LandingPage = () => (
+function LandingPage({ sent, handleSubmit, scrollToForm }) {
+  return (
     <div className="min-h-screen bg-gradient-to-br from-green-900 to-green-600 text-white relative overflow-hidden">
       {/* רקע */}
       <div className="absolute top-0 left-0 w-full h-full bg-[url('https://images.unsplash.com/photo-1504384308090-c894fdcc538d')] bg-cover bg-center opacity-20 blur-sm"></div>
@@ -124,16 +93,48 @@ function App() {
       </div>
     </div>
   );
-
-  return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<LandingPage />} />
-        <Route path="/admin" element={<Admin />} />
-        <Route path="/admin-panel" element={<AdminPanel />} />
-      </Routes>
-    </Router>
-  );
 }
 
-export default App;
+export default function App() {
+  const [sent, setSent] = useState(false);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const form = e.target;
+
+    const newLead = {
+      firstName: form.firstName.value,
+      lastName: form.lastName.value,
+      phone: form.phone.value,
+      address: form.address.value,
+      area: form.area.value,
+      profession: form.profession.value,
+      problem: form.problem.value,
+      createdAt: Timestamp.now(),
+    };
+
+    try {
+      await addDoc(collection(db, "leads"), newLead);
+      setSent(true);
+      form.reset();
+    } catch (error) {
+      console.error("שגיאה בשליחה:", error);
+    }
+  };
+
+  const scrollToForm = () => {
+    const section = document.getElementById("leadForm");
+    if (section) section.scrollIntoView({ behavior: "smooth" });
+  };
+
+  return (
+    <Routes>
+      <Route
+        path="/"
+        element={<LandingPage sent={sent} handleSubmit={handleSubmit} scrollToForm={scrollToForm} />}
+      />
+      <Route path="/admin" element={<Admin />} />
+      <Route path="/admin-panel" element={<AdminPanel />} />
+    </Routes>
+  );
+}
