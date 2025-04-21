@@ -1,8 +1,11 @@
 import React, { useState } from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { db } from "./firebase/firebaseConfig";
 import { collection, addDoc, Timestamp } from "firebase/firestore";
+import Admin from "./Admin";
+import AdminPanel from "./AdminPanel";
 
-export default function LandingPage() {
+function App() {
   const [sent, setSent] = useState(false);
 
   const handleSubmit = async (e) => {
@@ -34,7 +37,7 @@ export default function LandingPage() {
     if (section) section.scrollIntoView({ behavior: "smooth" });
   };
 
-  return (
+  const LandingPage = () => (
     <div className="min-h-screen bg-gradient-to-br from-green-900 to-green-600 text-white relative overflow-hidden">
       {/* רקע */}
       <div className="absolute top-0 left-0 w-full h-full bg-[url('https://images.unsplash.com/photo-1504384308090-c894fdcc538d')] bg-cover bg-center opacity-20 blur-sm"></div>
@@ -121,4 +124,16 @@ export default function LandingPage() {
       </div>
     </div>
   );
+
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/admin" element={<Admin />} />
+        <Route path="/admin-panel" element={<AdminPanel />} />
+      </Routes>
+    </Router>
+  );
 }
+
+export default App;
