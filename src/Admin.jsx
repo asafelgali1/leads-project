@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import AdminPanel from "./AdminPanel"; // הקובץ שמכיל את לוח הניהול המתקדם
+import AdminPanel from "./AdminPanel"; 
 
 export default function Admin() {
   const [password, setPassword] = useState("");
